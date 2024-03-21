@@ -13,7 +13,7 @@ import {
 } from "@/components/ui/dropdown-menu";
 import { ChevronsLeftRight } from "lucide-react";
 
-const UserItem = () => {
+export const UserItem = () => {
   const { user } = useUser();
 
   return (
@@ -68,5 +68,3 @@ const UserItem = () => {
     </DropdownMenu>
   );
 };
-
-export default UserItem;
