@@ -284,7 +284,7 @@ export const update = mutation({
       throw new Error("Not found");
     }
 
-    if (existingDocument.userId === userId) {
+    if (existingDocument.userId !== userId) {
       throw new Error("Unauthorized");
     }
 
