@@ -1,8 +1,7 @@
-/* eslint-disable react-hooks/exhaustive-deps */
 "use client";
 
 import {
-  ChevronLeft,
+  ChevronsLeft,
   MenuIcon,
   Plus,
   PlusCircle,
@@ -10,7 +9,7 @@ import {
   Settings,
   Trash,
 } from "lucide-react";
-import { useParams, usePathname } from "next/navigation";
+import { useParams, usePathname, useRouter } from "next/navigation";
 import { ElementRef, useEffect, useRef, useState } from "react";
 import { useMediaQuery } from "usehooks-ts";
 import { useMutation } from "convex/react";
@@ -33,8 +32,9 @@ import { TrashBox } from "./trash-box";
 import { Navbar } from "./navbar";
 
 export const Navigation = () => {
-  const search = useSearch();
+  const router = useRouter();
   const settings = useSettings();
+  const search = useSearch();
   const params = useParams();
   const pathname = usePathname();
   const isMobile = useMediaQuery("(max-width: 768px)");
@@ -63,8 +63,8 @@ export const Navigation = () => {
   const handleMouseDown = (
     event: React.MouseEvent<HTMLDivElement, MouseEvent>
   ) => {
-    event.preventDefault;
-    event.stopPropagation;
+    event.preventDefault();
+    event.stopPropagation();
 
     isResizingRef.current = true;
     document.addEventListener("mousemove", handleMouseMove);
@@ -75,7 +75,7 @@ export const Navigation = () => {
     if (!isResizingRef.current) return;
     let newWidth = event.clientX;
 
-    if (newWidth <= 240) newWidth = 240;
+    if (newWidth < 240) newWidth = 240;
     if (newWidth > 480) newWidth = 480;
 
     if (sidebarRef.current && navbarRef.current) {
@@ -122,7 +122,9 @@ export const Navigation = () => {
   };
 
   const handleCreate = () => {
-    const promise = create({ title: "Untitled" });
+    const promise = create({ title: "Untitled" }).then((documentId) =>
+      router.push(`/documents/${documentId}`)
+    );
 
     toast.promise(promise, {
       loading: "Creating a new note...",
@@ -149,19 +151,19 @@ export const Navigation = () => {
             isMobile && "opacity-100"
           )}
         >
-          <ChevronLeft className="h-6 w-6" />
+          <ChevronsLeft className="h-6 w-6" />
         </div>
         <div>
           <UserItem />
           <Item label="Search" icon={Search} isSearch onClick={search.onOpen} />
           <Item label="Settings" icon={Settings} onClick={settings.onOpen} />
-          <Item onClick={handleCreate} label="New Page" icon={PlusCircle} />
+          <Item onClick={handleCreate} label="New page" icon={PlusCircle} />
         </div>
         <div className="mt-4">
           <DocumentList />
           <Item onClick={handleCreate} icon={Plus} label="Add a page" />
           <Popover>
-            <PopoverTrigger className="w-full mt-4 ">
+            <PopoverTrigger className="w-full mt-4">
               <Item label="Trash" icon={Trash} />
             </PopoverTrigger>
             <PopoverContent

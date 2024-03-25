@@ -14,15 +14,15 @@ import { toast } from "sonner";
 import { useUser } from "@clerk/clerk-react";
 
 import { Id } from "@/convex/_generated/dataModel";
-import { api } from "@/convex/_generated/api";
 import { cn } from "@/lib/utils";
 import { Skeleton } from "@/components/ui/skeleton";
+import { api } from "@/convex/_generated/api";
 import {
   DropdownMenu,
-  DropdownMenuSeparator,
   DropdownMenuTrigger,
   DropdownMenuContent,
   DropdownMenuItem,
+  DropdownMenuSeparator,
 } from "@/components/ui/dropdown-menu";
 
 interface ItemProps {
@@ -58,11 +58,11 @@ export const Item = ({
   const onArchive = (event: React.MouseEvent<HTMLDivElement, MouseEvent>) => {
     event.stopPropagation();
     if (!id) return;
-    const promise = archive({ id });
+    const promise = archive({ id }).then(() => router.push("/documents"));
 
     toast.promise(promise, {
       loading: "Moving to trash...",
-      success: "Note moved to trash",
+      success: "Note moved to trash!",
       error: "Failed to archive note.",
     });
   };
@@ -82,7 +82,7 @@ export const Item = ({
         if (!expanded) {
           onExpand?.();
         }
-        // router.push(`/documents/${documentId}`);
+        router.push(`/documents/${documentId}`);
       }
     );
 
@@ -99,7 +99,9 @@ export const Item = ({
     <div
       onClick={onClick}
       role="button"
-      style={{ paddingLeft: level ? `${level * 12 + 12}px` : "12px" }}
+      style={{
+        paddingLeft: level ? `${level * 12 + 12}px` : "12px",
+      }}
       className={cn(
         "group min-h-[27px] text-sm py-1 pr-3 w-full hover:bg-primary/5 flex items-center text-muted-foreground font-medium",
         active && "bg-primary/5 text-primary"
@@ -115,14 +117,14 @@ export const Item = ({
         </div>
       )}
       {documentIcon ? (
-        <div className="shrink-0 mr-2 text-[18]px">{documentIcon}</div>
+        <div className="shrink-0 mr-2 text-[18px]">{documentIcon}</div>
       ) : (
-        <Icon className="shrink-o h-[18px] mr-2 text-muted-foreground" />
+        <Icon className="shrink-0 h-[18px] w-[18px] mr-2 text-muted-foreground" />
       )}
       <span className="truncate">{label}</span>
       {isSearch && (
         <kbd className="ml-auto pointer-events-none inline-flex h-5 select-none items-center gap-1 rounded border bg-muted px-1.5 font-mono text-[10px] font-medium text-muted-foreground opacity-100">
-          <span className="text-xs">CTRL</span>K
+          <span className="text-xs">⌘</span>K
         </kbd>
       )}
       {!!id && (
@@ -148,7 +150,7 @@ export const Item = ({
               </DropdownMenuItem>
               <DropdownMenuSeparator />
               <div className="text-xs text-muted-foreground p-2">
-                Last edited by:{user?.fullName}
+                Last edited by: {user?.fullName}
               </div>
             </DropdownMenuContent>
           </DropdownMenu>
@@ -168,7 +170,9 @@ export const Item = ({
 Item.Skeleton = function ItemSkeleton({ level }: { level?: number }) {
   return (
     <div
-      style={{ paddingLeft: level ? `${level * 12 + 12}px` : "12px" }}
+      style={{
+        paddingLeft: level ? `${level * 12 + 25}px` : "12px",
+      }}
       className="flex gap-x-2 py-[3px]"
     >
       <Skeleton className="h-4 w-4" />
