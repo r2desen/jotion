@@ -17,9 +17,23 @@ interface DocumentIdPageProps {
 }
 
 const DocumentIdPage = ({ params }: DocumentIdPageProps) => {
+  const Editor = useMemo(
+    () => dynamic(() => import("@/components/editor"), { ssr: false }),
+    []
+  );
+
   const document = useQuery(api.documents.getById, {
     documentId: params.documentId,
   });
+
+  const update = useMutation(api.documents.update);
+
+  const onChange = (content: string) => {
+    update({
+      id: params.documentId,
+      content,
+    });
+  };
 
   if (document === undefined) {
     return (
@@ -38,7 +52,7 @@ const DocumentIdPage = ({ params }: DocumentIdPageProps) => {
   }
 
   if (document === null) {
-    return <div>Not Found</div>;
+    return <div>Not found</div>;
   }
 
   return (
@@ -46,6 +60,7 @@ const DocumentIdPage = ({ params }: DocumentIdPageProps) => {
       <Cover url={document.coverImage} />
       <div className="md:max-w-3xl lg:max-w-4xl mx-auto">
         <Toolbar initialData={document} />
+        <Editor onChange={onChange} initialContent={document.content} />
       </div>
     </div>
   );
